@@ -11,9 +11,9 @@ var (
 
 func init() {
 	redisOptions := &redis.Options{
-		Addr:               "127.0.0.1:6379",
-		Password:           "",
-		DB:                 0,
+		Addr:     "127.0.0.1:6379",
+		Password: "",
+		DB:       0,
 	}
 	redisClient = redis.NewClient(redisOptions)
 }
@@ -35,5 +35,5 @@ func GetKeyByPrefix(prefix, key string) (string, error) {
 }
 
 func SetKeyByPrefix(prefix, key string, value interface{}) error {
-	return redisClient.Set(prefix + key, value, time.Second).Err()
+	return redisClient.Set(prefix+key, value, time.Second).Err()
 }
