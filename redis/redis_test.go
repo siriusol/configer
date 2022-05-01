@@ -3,7 +3,8 @@ package redis
 import "testing"
 
 func TestGetKeys(t *testing.T) {
-	keys, err := GetKeys()
+	c := New(&Option{})
+	keys, err := c.GetKeys()
 	if err != nil {
 		panic(err)
 	}

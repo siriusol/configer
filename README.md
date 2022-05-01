@@ -9,3 +9,5 @@ You Know, a Dynamic Configuration Center
 * exposed as a http service
 * Flush redis data to file.
 * cluster
+
+#### Power by Public Cloud Plan(PCP)

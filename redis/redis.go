@@ -5,35 +5,45 @@ import (
 	"time"
 )
 
-var (
+type Client struct {
 	redisClient *redis.Client
-)
-
-func init() {
-	redisOptions := &redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       0,
-	}
-	redisClient = redis.NewClient(redisOptions)
+	option      *Option
 }
 
-func GetKeys() ([]string, error) {
-	cmd := redisClient.Keys("*")
+type Option struct {
+	Addr     string
+	Password string
+	DB       int
+}
+
+func New(op *Option) *Client {
+	redisOptions := &redis.Options{
+		Addr:     op.Addr,
+		Password: op.Password,
+		DB:       op.DB,
+	}
+	return &Client{
+		redisClient: redis.NewClient(redisOptions),
+		option:      op,
+	}
+}
+
+func (c *Client) GetKeys() ([]string, error) {
+	cmd := c.redisClient.Keys("*")
 	if cmd.Err() != nil {
 		return nil, cmd.Err()
 	}
 	return cmd.Val(), nil
 }
 
-func GetKeyByPrefix(prefix, key string) (string, error) {
-	cmd := redisClient.Get(key)
+func (c *Client) GetKeyByPrefix(prefix, key string) (string, error) {
+	cmd := c.redisClient.Get(key)
 	if cmd.Err() != nil {
 		return "", cmd.Err()
 	}
 	return cmd.Val(), nil
 }
 
-func SetKeyByPrefix(prefix, key string, value interface{}) error {
-	return redisClient.Set(prefix+key, value, time.Second).Err()
+func (c *Client) SetKeyByPrefix(prefix, key string, value interface{}, expiration time.Duration) error {
+	return c.redisClient.Set(prefix+key, value, expiration).Err()
 }
